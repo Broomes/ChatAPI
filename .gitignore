@@ -1,0 +1,30 @@
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Package Files
+*.jar
+*.war
+*.ear
+
+# Compiled class files
+*.class
+
+# Database Properties file
+*.properties
+
+# Hibernate config file
+hibernate.cfg.xml
