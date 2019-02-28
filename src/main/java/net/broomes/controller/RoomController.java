@@ -3,35 +3,44 @@ package net.broomes.controller;
 import net.broomes.model.Room;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController()
 @RequestMapping("api")
 public class RoomController {
 
-    private static Logger logger = LoggerFactory.getLogger(RoomController.class);
+    private static Logger log = LoggerFactory.getLogger(RoomController.class);
 
-    SessionFactory factory = new Configuration()
-            .configure("hibernate.cfg.xml")
-            .addAnnotatedClass(Room.class)
-            .buildSessionFactory();
+    @Autowired
+    private SessionFactory factory;
+
+    /*
+    >>>>>>>>>>>>>>>>>  Controller methods below <<<<<<<<<<<<<<<<<<
+     */
 
     @GetMapping("/rooms")
     public List<Room> getRooms(){
         Session session = factory.getCurrentSession();
         try {
-            return getRooms(session);
-        } catch (Exception e){
-            System.out.println(e);
-            return null;
-        } finally {
+            List<Room> rooms = getRooms(session);
             session.close();
+            return rooms;
+        } catch (Exception e){
+            log.error(e.toString());
+            session.close();
+            return null;
         }
     }
 
@@ -40,62 +49,73 @@ public class RoomController {
         Session session = factory.getCurrentSession();
         try {
             Room room = getRoom(session, roomName);
-            System.out.println(room.toString());
+            session.close();
             return room;
         } catch (Exception e){
-            System.out.println(e);
-            return null;
-        } finally {
+            log.error(e.toString());
             session.close();
+            return null;
         }
     }
 
-    @PutMapping("/room/{roomName}/{roomDesc}")
-    public void saveRoom(@PathVariable String roomName, @PathVariable String roomDesc){
+    @PutMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> saveRoom(@RequestBody Room newRoom){
         Session session = factory.getCurrentSession();
-        Room room = new Room(roomName, roomDesc);
+        Room room = new Room(newRoom.getRoomName(), newRoom.getRoomDesc());
         try {
             saveRoom(session, room);
-        } catch (Exception e){
-            System.out.println(e);
-        } finally {
             session.close();
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.toString());
+            session.close();
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @DeleteMapping("/room/{roomName}")
-    public void saveRoom(@PathVariable String roomName){
+    @DeleteMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteRoom(@RequestBody String roomName){
+
+//        Converts @RequestBody JSON String into a string containing only roomName
+        roomName = new JSONObject(roomName).getString("roomName");
+
         Session session = factory.getCurrentSession();
         try {
             deleteRoom(session, roomName);
-        } catch (Exception e){
-            System.out.println(e);
-        } finally {
             session.close();
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
+        } catch (Exception e){
+            log.error(e.toString());
+            session.close();
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    public void saveRoom(Session session, Room room){
+    /*
+    >>>>>>>>>>>>>>>>>  Helper methods below <<<<<<<<<<<<<<<<<<
+     */
+
+    private void saveRoom(Session session, Room room){
         session.beginTransaction();
         session.save(room);
         session.getTransaction().commit();
     }
 
-    public Room getRoom(Session session, String roomName){
+    private Room getRoom(Session session, String roomName){
         session.beginTransaction();
         Room theRoom = session.get(Room.class, roomName);
         session.getTransaction().commit();
         return theRoom;
     }
 
-    public List<Room> getRooms(Session session){
+    private List<Room> getRooms(Session session){
         session.beginTransaction();
         List<Room> rooms = session.createQuery("from Room").getResultList();
         session.getTransaction().commit();
         return rooms;
     }
 
-    public void deleteRoom(Session session, String roomName){
+    private void deleteRoom(Session session, String roomName){
         session.beginTransaction();
         Query query = session.createQuery("delete from Room where roomName= :roomName");
         query.setParameter("roomName", roomName);
