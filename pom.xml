@@ -15,7 +15,6 @@
     <springsecurity.version>5.0.0.RELEASE</springsecurity.version>
     <hibernate.version>5.2.16.Final</hibernate.version>
     <mysql.connector.version>5.1.45</mysql.connector.version>
-    <c3po.version>0.9.5.2</c3po.version>
 
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -83,8 +82,9 @@
     <dependency>
       <groupId>com.mchange</groupId>
       <artifactId>c3p0</artifactId>
-      <version>${c3po.version}</version>
+      <version>0.9.5.3</version>
     </dependency>
+
 
     <!-- Servlet -->
     <dependency>
@@ -120,12 +120,13 @@
       <artifactId>javassist</artifactId>
       <version>3.23.1-GA</version>
     </dependency>
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <version>1.7.25</version>
-      </dependency>
 
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
+    </dependency>
 
   </dependencies>
 
