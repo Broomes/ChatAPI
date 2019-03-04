@@ -1,7 +1,7 @@
 package net.broomes.controller;
 
-import net.broomes.dao.RoomDao;
-import net.broomes.entity.Room;
+import net.broomes.dao.ProfileDao;
+import net.broomes.entity.Profile;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.json.JSONObject;
@@ -19,48 +19,48 @@ import java.util.List;
 @CrossOrigin
 @RestController()
 @RequestMapping("api")
-public class RoomController {
+public class ProfileController {
 
-    private static Logger log = LoggerFactory.getLogger(RoomController.class);
+    private static Logger log = LoggerFactory.getLogger(ProfileController.class);
 
     @Autowired
     private SessionFactory factory;
 
-    @GetMapping("/rooms")
-    public List<Room> getRooms(){
+    @GetMapping("/profiles")
+    public List<Profile> getProfiles(){
         Session session = factory.getCurrentSession();
-        RoomDao roomDao = new RoomDao();
+        ProfileDao profileDao = new ProfileDao();
         try {
-            List<Room> rooms = roomDao.getRooms(session);
+            List<Profile> profiles = profileDao.getProfiles(session);
             session.close();
-            return rooms;
+            return profiles;
         } catch (Exception e){
             log.error(e.toString());
             return null;
         }
     }
 
-    @GetMapping("/room/{roomName}")
-    public Room getRoom(@PathVariable String roomName){
+    @GetMapping("/profile/{username}")
+    public Profile getProfile(@PathVariable String username){
         Session session = factory.getCurrentSession();
-        RoomDao roomDao = new RoomDao();
+        ProfileDao profileDao = new ProfileDao();
         try {
-            Room room = roomDao.getRoom(session, roomName);
+            Profile profile = profileDao.getProfile(session, username);
             session.close();
-            return room;
+            return profile;
         } catch (Exception e){
             log.error(e.toString());
             return null;
         }
     }
 
-    @PutMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> saveRoom(@RequestBody Room newRoom){
+    @PutMapping(path="/profile", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> saveProfile(@RequestBody Profile newProfile){
         Session session = factory.getCurrentSession();
-        Room room = new Room(newRoom.getRoomName(), newRoom.getRoomDesc());
-        RoomDao roomDao = new RoomDao();
+        Profile profile = new Profile(newProfile.getUsername(), newProfile.getAvatar());
+        ProfileDao profileDao = new ProfileDao();
         try {
-            roomDao.saveRoom(session, room);
+            profileDao.saveProfile(session, profile);
             session.close();
             return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
         } catch (Exception e){
@@ -69,17 +69,17 @@ public class RoomController {
         }
     }
 
-    @DeleteMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<String> deleteRoom(@RequestBody String roomName){
+    @DeleteMapping(path="/profile", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<String> deleteProfile(@RequestBody String username){
         Session session = factory.getCurrentSession();
 
-//        Converts @RequestBody JSON String into a string containing only roomName
-        roomName = new JSONObject(roomName).getString("roomName");
+//        Converts @RequestBody JSON String into a string containing only username
+        username = new JSONObject(username).getString("username");
 
-        RoomDao roomDao = new RoomDao();
+        ProfileDao profileDao = new ProfileDao();
 
         try {
-            roomDao.deleteRoom(session, roomName);
+            profileDao.deleteProfile(session, username);
             session.close();
             return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
         } catch (Exception e){

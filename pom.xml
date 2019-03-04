@@ -45,24 +45,26 @@
       <artifactId>spring-security-web</artifactId>
       <version>${springsecurity.version}</version>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
       <version>${springsecurity.version}</version>
     </dependency>
 
-    <!-- Jackson for JSON converters -->
+    <!-- JSON Conversion for GET controllers -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.9.5</version>
+      <version>2.9.8</version>
     </dependency>
-      <!-- JSON Conversion in controllers -->
-      <dependency>
-          <groupId>org.json</groupId>
-          <artifactId>json</artifactId>
-          <version>20180813</version>
-      </dependency>
+
+    <!-- JSON Conversion controller consume/produces -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20180813</version>
+    </dependency>
 
     <!-- Hibernate -->
     <dependency>
@@ -80,11 +82,10 @@
 
     <!-- C3PO -->
     <dependency>
-      <groupId>com.mchange</groupId>
+      <groupId>c3p0</groupId>
       <artifactId>c3p0</artifactId>
-      <version>0.9.5.3</version>
+      <version>0.9.1.2</version>
     </dependency>
-
 
     <!-- Servlet -->
     <dependency>
@@ -92,7 +93,6 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
     </dependency>
-
 
     <!-- to compensate for java 10 not including jaxb -->
     <dependency>

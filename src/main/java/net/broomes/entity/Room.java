@@ -1,4 +1,4 @@
-package net.broomes.model;
+package net.broomes.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

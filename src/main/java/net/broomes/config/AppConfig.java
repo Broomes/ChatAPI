@@ -1,6 +1,7 @@
 package net.broomes.config;
 
-import net.broomes.model.Room;
+import net.broomes.entity.Profile;
+import net.broomes.entity.Room;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +18,7 @@ public class AppConfig {
         SessionFactory sessionFactory = new org.hibernate.cfg.Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Room.class)
+                .addAnnotatedClass(Profile.class)
                 .buildSessionFactory();
         return sessionFactory;
     }
