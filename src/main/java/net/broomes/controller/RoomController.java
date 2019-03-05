@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,12 @@ public class RoomController {
     private static Logger log = LoggerFactory.getLogger(RoomController.class);
 
     @Autowired
-    private SessionFactory factory;
+    @Qualifier("roomSessionFactory")
+    private SessionFactory roomSessionFactory;
 
     @GetMapping(path="/rooms")
     public List<Room> getRooms(){
-        Session session = factory.getCurrentSession();
+        Session session = roomSessionFactory.getCurrentSession();
         RoomDao roomDao = new RoomDao();
         try {
             List<Room> rooms = roomDao.getRooms(session);
@@ -41,7 +43,7 @@ public class RoomController {
 
     @GetMapping(path="/room/{roomName}")
     public Room getRoom(@PathVariable String roomName){
-        Session session = factory.getCurrentSession();
+        Session session = roomSessionFactory.getCurrentSession();
         RoomDao roomDao = new RoomDao();
         try {
             Room room = roomDao.getRoom(session, roomName);
@@ -55,7 +57,7 @@ public class RoomController {
 
     @PostMapping(path="/room")
     public ResponseEntity<String> saveRoom(@RequestBody Room newRoom){
-        Session session = factory.getCurrentSession();
+        Session session = roomSessionFactory.getCurrentSession();
         Room room = new Room(newRoom.getRoomName(), newRoom.getRoomDesc());
         RoomDao roomDao = new RoomDao();
         try {
@@ -70,7 +72,7 @@ public class RoomController {
 
     @DeleteMapping(path="/room")
     public ResponseEntity<String> deleteRoom(@RequestBody String roomName){
-        Session session = factory.getCurrentSession();
+        Session session = roomSessionFactory.getCurrentSession();
 
 //        Converts @RequestBody JSON String into a string containing only roomName
         roomName = new JSONObject(roomName).getString("roomName");

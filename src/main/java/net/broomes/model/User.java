@@ -3,51 +3,32 @@ package net.broomes.model;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Collection;
 
+@Entity
+@Table(name = "users")
 public class User implements UserDetails {
 
+    @Id
     private String username;
     private String password;
-    private Collection<? extends GrantedAuthority> authorities;
-    private byte[] avatar;
+    private int enabled;
 
-    public User() {
+    public User(){
     }
 
-    public User(String username, String password, Collection<? extends GrantedAuthority> authorities, byte[] avatar) {
+    public User(String username, String password, int enabled) {
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
-        this.avatar = avatar;
+        this.enabled = enabled;
     }
 
+    @Override
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
-
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
     }
 
     @Override
@@ -67,16 +48,37 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
 
     @Override
     public String getName() {
-        return username;
+        return null;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
     }
 }

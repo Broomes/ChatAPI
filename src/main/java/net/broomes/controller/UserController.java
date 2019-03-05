@@ -2,10 +2,12 @@ package net.broomes.controller;
 
 import net.broomes.dao.UserDao;
 import net.broomes.model.User;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping(path="/user/{username}")
-    public User getUser(@PathVariable String username){
+    public UserDetails getUser(@PathVariable String username){
         try {
             return userDao.getUser(username);
         } catch (Exception e){
@@ -47,6 +49,9 @@ public class UserController {
 
     @DeleteMapping(path="/user")
     public ResponseEntity<String> deleteUser(@RequestBody String username){
+        //        Converts @RequestBody JSON String into a string containing only username
+        username = new JSONObject(username).getString("username");
+
         return userDao.deleteUser(username);
     }
 }
