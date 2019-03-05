@@ -1,6 +1,6 @@
 package net.broomes.dao;
 
-import net.broomes.entity.Room;
+import net.broomes.model.Room;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;

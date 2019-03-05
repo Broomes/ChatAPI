@@ -1,7 +1,7 @@
 package net.broomes.controller;
 
 import net.broomes.dao.RoomDao;
-import net.broomes.entity.Room;
+import net.broomes.model.Room;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.json.JSONObject;
@@ -10,14 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @CrossOrigin
-@RestController()
+@RestController
 @RequestMapping("api")
 public class RoomController {
 
@@ -26,7 +25,7 @@ public class RoomController {
     @Autowired
     private SessionFactory factory;
 
-    @GetMapping("/rooms")
+    @GetMapping(path="/rooms")
     public List<Room> getRooms(){
         Session session = factory.getCurrentSession();
         RoomDao roomDao = new RoomDao();
@@ -40,7 +39,7 @@ public class RoomController {
         }
     }
 
-    @GetMapping("/room/{roomName}")
+    @GetMapping(path="/room/{roomName}")
     public Room getRoom(@PathVariable String roomName){
         Session session = factory.getCurrentSession();
         RoomDao roomDao = new RoomDao();
@@ -54,7 +53,7 @@ public class RoomController {
         }
     }
 
-    @PutMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path="/room")
     public ResponseEntity<String> saveRoom(@RequestBody Room newRoom){
         Session session = factory.getCurrentSession();
         Room room = new Room(newRoom.getRoomName(), newRoom.getRoomDesc());
@@ -69,7 +68,7 @@ public class RoomController {
         }
     }
 
-    @DeleteMapping(path="/room", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @DeleteMapping(path="/room")
     public ResponseEntity<String> deleteRoom(@RequestBody String roomName){
         Session session = factory.getCurrentSession();
 
