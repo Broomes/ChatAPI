@@ -15,9 +15,12 @@ import java.util.List;
 @RequestMapping("api")
 public class UserController {
 
-    @Autowired
-    UserDao userDao;
+    private UserDao userDao;
 
+    @Autowired
+    public UserController(UserDao userDao){
+        this.userDao = userDao;
+    }
 
     @GetMapping(path="/users")
     public ResponseEntity<List> getUsers(){

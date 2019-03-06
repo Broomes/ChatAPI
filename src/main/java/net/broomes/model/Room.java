@@ -19,11 +19,6 @@ public class Room {
     public Room() {
     }
 
-    public Room(String roomName, String roomDesc) {
-        this.roomName = roomName;
-        this.roomDesc = roomDesc;
-    }
-
     public String getRoomName() {
         return roomName;
     }

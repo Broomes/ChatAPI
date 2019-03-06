@@ -2,8 +2,6 @@ package net.broomes.dao;
 
 import net.broomes.model.User;
 import net.broomes.service.ChatUserDetailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,13 +18,14 @@ import java.util.List;
 @Repository
 public class UserDao {
 
-    private static Logger log = LoggerFactory.getLogger(UserDao.class);
-
-    @Autowired
-    ChatUserDetailService chatUserDetailService;
-
-    @Autowired
+    private ChatUserDetailService chatUserDetailService;
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserDao(ChatUserDetailService chatUserDetailService, BCryptPasswordEncoder passwordEncoder){
+        this.chatUserDetailService = chatUserDetailService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public ResponseEntity<UserDetails> getUser(String username){
         UserDetails user = chatUserDetailService.loadUserByUsername(username);

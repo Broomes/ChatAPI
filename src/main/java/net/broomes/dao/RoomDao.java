@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +18,12 @@ import java.util.List;
 public class RoomDao {
 
     private static Logger log = LoggerFactory.getLogger(RoomDao.class);
-
+    private SessionFactory roomSessionFactory;
 
     @Autowired
-    @Qualifier("roomSessionFactory")
-    private SessionFactory roomSessionFactory;
+    public RoomDao(SessionFactory roomSessionFactory){
+        this.roomSessionFactory = roomSessionFactory;
+    }
 
     public ResponseEntity<Room> getRoom(String roomName){
         //noinspection Duplicates

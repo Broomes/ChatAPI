@@ -4,6 +4,7 @@ import net.broomes.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -15,17 +16,14 @@ public class ChatUserDetailService implements UserDetailsService {
 
     private SessionFactory userSessionFactory;
 
+    @Autowired
     public ChatUserDetailService(SessionFactory userSessionFactory){
         this.userSessionFactory = userSessionFactory;
     }
 
     public boolean userExists(String username) {
-        if(loadUserByUsername(username) != null){
-            return true;
-        }
-        else {
-            return false;
-        }
+        if(loadUserByUsername(username) != null){ return true; }
+        else { return false; }
     }
 
     @Override

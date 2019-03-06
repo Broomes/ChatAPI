@@ -14,9 +14,12 @@ import java.util.List;
 @RequestMapping("api")
 public class RoomController {
 
-    @Autowired
     private RoomDao roomDao;
 
+    @Autowired
+    public RoomController(RoomDao roomDao){
+        this.roomDao = roomDao;
+    }
 
     @GetMapping(path="/rooms")
     public ResponseEntity<List> getRooms(){
