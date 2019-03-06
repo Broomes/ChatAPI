@@ -23,8 +23,5 @@ target/
 # Compiled class files
 *.class
 
-# Database Properties file
-*.properties
-
 # Hibernate config file
 *.cfg.xml

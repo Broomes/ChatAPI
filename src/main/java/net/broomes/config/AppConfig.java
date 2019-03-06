@@ -16,7 +16,7 @@ public class AppConfig {
     @Bean
     public SessionFactory roomSessionFactory() {
         SessionFactory sessionFactory = new org.hibernate.cfg.Configuration()
-                .configure("hibernate.cfg.xml")
+                .configure("room_hibernate.cfg.xml")
                 .addAnnotatedClass(Room.class)
                 .buildSessionFactory();
         return sessionFactory;
