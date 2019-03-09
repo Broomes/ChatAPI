@@ -1,13 +1,25 @@
 package net.broomes.controller;
 
-import net.broomes.dao.UserDao;
-import net.broomes.model.User;
-import org.json.JSONObject;
+import net.broomes.dao.ProfileDao;
+import net.broomes.model.Profile;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -15,33 +27,59 @@ import java.util.List;
 @RequestMapping("api")
 public class UserController {
 
-    private UserDao userDao;
+    @Value("classpath:basic_avatar.jpg")
+    File fileItem;
+
+    private JdbcUserDetailsManager jdbcUserDetailsManager;
+    private PasswordEncoder passwordEncoder;
+    private ProfileDao profileDao;
 
     @Autowired
-    public UserController(UserDao userDao){
-        this.userDao = userDao;
+    public UserController(ProfileDao profileDao, PasswordEncoder passwordEncoder, JdbcUserDetailsManager jdbcUserDetailsManager){
+        this.profileDao = profileDao;
+        this.passwordEncoder = passwordEncoder;
+        this.jdbcUserDetailsManager = jdbcUserDetailsManager;
     }
 
-    @GetMapping(path="/users")
-    public ResponseEntity<List> getUsers(){
-        return userDao.getUsers();
+
+    @PostMapping(path="/register")
+    public ResponseEntity<String> processRegister(@RequestParam String username, @RequestParam String password, @RequestParam String confirmPassword, @RequestParam(name="avatar", required =false) MultipartFile avatar) throws IOException {
+
+        if(!password.equals(confirmPassword) || username.length()<2 || username.length()>20){
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        if(avatar==null){
+            avatar=getBasicAvatar();
+        }
+
+        // authorities to be granted
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        if(jdbcUserDetailsManager.userExists(username)){
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.ALREADY_REPORTED);
+        }
+        else{
+            String encodedPassword = passwordEncoder.encode(password);
+            org.springframework.security.core.userdetails.User newUser = new org.springframework.security.core.userdetails.User(username, encodedPassword, authorities);
+            jdbcUserDetailsManager.createUser(newUser);
+            Profile profile = new Profile(username, avatar.getBytes());
+            profileDao.createProfile(profile);
+            return new ResponseEntity<>(new HttpHeaders(), HttpStatus.OK);
+        }
     }
 
-    @GetMapping(path="/user/{username}")
-    public ResponseEntity<UserDetails> getUser(@PathVariable String username){
-        return userDao.getUser(username);
-    }
+    /**
+     * Helper class needed to convert image file to MultipartFile
+     * @return avatar MultipartFile
+     * @throws IOException
+     */
+    private MultipartFile getBasicAvatar() throws IOException {
 
-    @PostMapping(path="/user")
-    public ResponseEntity<User> processRegister(@RequestBody User user) {
-        return userDao.saveUser(user);
-    }
-
-    @DeleteMapping(path="/user")
-    public ResponseEntity<String> deleteUser(@RequestBody String username){
-
-        //Converts @RequestBody JSON String into a string containing only username
-        username = new JSONObject(username).getString("username");
-        return userDao.deleteUser(username);
+        FileInputStream input = new FileInputStream(fileItem.getPath());
+        MultipartFile multipartFile = new MockMultipartFile("fileItem",
+                fileItem.getName(), "image/jpg", IOUtils.toByteArray(input));
+        return multipartFile;
     }
 }

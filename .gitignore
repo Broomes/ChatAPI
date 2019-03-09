@@ -25,3 +25,5 @@ target/
 
 # Hibernate config file
 *.cfg.xml
+
+*.properties

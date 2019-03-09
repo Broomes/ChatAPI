@@ -18,17 +18,17 @@ import java.util.List;
 public class RoomDao {
 
     private static Logger log = LoggerFactory.getLogger(RoomDao.class);
-    private SessionFactory roomSessionFactory;
+    private SessionFactory sessionFactory;
 
     @Autowired
-    public RoomDao(SessionFactory roomSessionFactory){
-        this.roomSessionFactory = roomSessionFactory;
+    public RoomDao(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
     }
 
     public ResponseEntity<Room> getRoom(String roomName){
         //noinspection Duplicates
         try {
-            Session session = roomSessionFactory.getCurrentSession();
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
             Room room = session.get(Room.class, roomName);
             if(room==null){throw new NameNotFoundException();}
@@ -44,7 +44,7 @@ public class RoomDao {
     public ResponseEntity<List> getRooms(){
         //noinspection Duplicates
         try {
-            Session session = roomSessionFactory.getCurrentSession();
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
             List<Room> rooms = session.createQuery("from Room").getResultList();
             if(rooms==null){throw new NameNotFoundException();}
@@ -59,7 +59,7 @@ public class RoomDao {
 
     public ResponseEntity<Room> saveRoom(Room room){
         try {
-            Session session = roomSessionFactory.getCurrentSession();
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
             session.save(room);
             session.getTransaction().commit();
@@ -73,7 +73,7 @@ public class RoomDao {
 
     public ResponseEntity<String> deleteRoom(String roomName){
         try {
-            Session session = roomSessionFactory.getCurrentSession();
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
             Room room = session.load(Room.class, roomName);
             session.delete(room);
