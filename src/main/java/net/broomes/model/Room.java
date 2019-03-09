@@ -34,12 +34,4 @@ public class Room {
     public void setRoomDesc(String roomDesc) {
         this.roomDesc = roomDesc;
     }
-
-    @Override
-    public String toString() {
-        return "Room{" +
-                "roomName='" + roomName + '\'' +
-                ", roomDesc='" + roomDesc + '\'' +
-                '}';
-    }
 }

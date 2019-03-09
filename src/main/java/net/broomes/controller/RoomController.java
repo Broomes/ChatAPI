@@ -1,7 +1,7 @@
 package net.broomes.controller;
 
-import net.broomes.dao.RoomDao;
 import net.broomes.model.Room;
+import net.broomes.service.RoomService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,26 +14,26 @@ import java.util.List;
 @RequestMapping("api")
 public class RoomController {
 
-    private RoomDao roomDao;
+    private RoomService roomService;
 
     @Autowired
-    public RoomController(RoomDao roomDao){
-        this.roomDao = roomDao;
+    public RoomController(RoomService roomService){
+        this.roomService = roomService;
     }
 
     @GetMapping(path="/rooms")
     public ResponseEntity<List> getRooms(){
-        return roomDao.getRooms();
+        return roomService.getRooms();
     }
 
     @GetMapping(path="/room/{roomName}")
     public ResponseEntity<Room> getRoom(@PathVariable String roomName){
-        return roomDao.getRoom(roomName);
+        return roomService.getRoom(roomName);
     }
 
     @PostMapping(path="/room")
     public ResponseEntity<Room> saveRoom(@RequestBody Room room){
-        return roomDao.saveRoom(room);
+        return roomService.saveRoom(room);
     }
 
     @DeleteMapping(path="/room")
@@ -41,6 +41,6 @@ public class RoomController {
 
 //        Converts @RequestBody JSON String into a string containing only roomName
         roomName = new JSONObject(roomName).getString("roomName");
-        return roomDao.deleteRoom(roomName);
+        return roomService.deleteRoom(roomName);
     }
 }

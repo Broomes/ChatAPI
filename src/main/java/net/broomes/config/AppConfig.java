@@ -16,7 +16,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
-import java.util.logging.Logger;
 
 @Configuration
 @EnableWebMvc
@@ -24,10 +23,12 @@ import java.util.logging.Logger;
 @PropertySource("classpath:persistence-mysql.properties")
 public class AppConfig {
 
-    @Autowired
     private Environment env;
 
-    private Logger log = Logger.getLogger(getClass().getName());
+    @Autowired
+    public AppConfig(Environment env){
+        this.env = env;
+    }
 
     @Bean
     public SessionFactory SessionFactory() {
@@ -43,8 +44,7 @@ public class AppConfig {
     public MultipartResolver multipartResolver(){
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver();
         commonsMultipartResolver.setDefaultEncoding("utf-8");
-        commonsMultipartResolver.setMaxUploadSize(20000000);
-        commonsMultipartResolver.setResolveLazily(false);
+        commonsMultipartResolver.setMaxUploadSizePerFile(10000000);
         return commonsMultipartResolver;
     }
 
@@ -60,11 +60,6 @@ public class AppConfig {
         securityDataSource.setJdbcUrl(env.getProperty("jdbc.url"));
         securityDataSource.setUser(env.getProperty("jdbc.user"));
         securityDataSource.setPassword(env.getProperty("jdbc.password"));
-
-        log.info(">>>> jdbc.url=" + env.getProperty("jdbc.driver"));
-        log.info(">>>> jdbc.url=" + env.getProperty("jdbc.url"));
-        log.info(">>>> jdbc.user=" + env.getProperty("jdbc.user"));
-        log.info(">>>> jdbc.password=" + env.getProperty("jdbc.password"));
 
         securityDataSource.setInitialPoolSize(getIntProperty("connection.pool.initialPoolSize"));
         securityDataSource.setMinPoolSize(getIntProperty("connection.pool.minPoolSize"));

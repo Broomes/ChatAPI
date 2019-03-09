@@ -12,8 +12,12 @@ import java.util.List;
 @Repository
 public class ProfileDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public ProfileDao(SessionFactory sessionFactory){
+        this.sessionFactory = sessionFactory;
+    }
 
     public Profile loadProfileByUsername(String username){
         Session session = sessionFactory.getCurrentSession();
