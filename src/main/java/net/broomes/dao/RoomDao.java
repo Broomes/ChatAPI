@@ -48,13 +48,13 @@ public class RoomDao {
         return new ResponseEntity<>(rooms, new HttpHeaders(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Room> saveRoom(Room room){
+    public ResponseEntity<String> saveRoom(Room room){
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         session.save(room);
         session.getTransaction().commit();
         session.close();
-        return new ResponseEntity<>(room, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>("Room Created", new HttpHeaders(), HttpStatus.OK);
     }
 
     public ResponseEntity<String> deleteRoom(String roomName){

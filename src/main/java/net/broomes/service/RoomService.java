@@ -36,10 +36,21 @@ public class RoomService {
         return roomDao.getRooms();
     }
 
-    public ResponseEntity<Room> saveRoom(Room room){
-        if(doesTheRoomAlreadyExist(room.getRoomName())){
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> saveRoom(Room room){
+        String roomName = room.getRoomName();
+        if(doesTheRoomAlreadyExist(roomName)){
+            return new ResponseEntity<>("Room already exists", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
+        if(!roomName.matches("[a-zA-Z0-9]*")){
+            return new ResponseEntity<>("Room name must be only letters and numbers", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+        if(roomName.length()<2 || roomName.length()>20){
+            return new ResponseEntity<>("Room name must be between 2 - 20 characters.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(room.getRoomDesc().length()>=40){
+            return new ResponseEntity<>("Room description must be 40 characters or less.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+        }
+        room.setRoomName(roomName.substring(0, 1).toUpperCase() + roomName.substring(1));
         return roomDao.saveRoom(room);
     }
 
@@ -48,7 +59,7 @@ public class RoomService {
             return roomDao.deleteRoom(roomName);
         }
         else {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Room does not exist", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
     }
 }
