@@ -58,6 +58,16 @@ public class RegistrationService {
             return new ResponseEntity<>("Username must be between 2 - 20 characters.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
+        // no avatar submitted, then load the default avatar from the resources folder
+        if(avatar==null){
+            try {
+                FileInputStream input = new FileInputStream(basicAvatar.getPath());
+                avatar = new MockMultipartFile("fileItem", basicAvatar.getName(), "image/jpg", IOUtils.toByteArray(input));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         if(avatar.getSize() > 10000000){
             return new ResponseEntity<>("Profile picture is too large. Has to be less than 10MB", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
@@ -82,19 +92,7 @@ public class RegistrationService {
     }
 
     private void addProfile(String username, MultipartFile avatar) {
-
         Profile profile = new Profile();
-
-        // no avatar submitted, then load the default avatar from the resources folder
-        if(avatar==null){
-            FileInputStream input = null;
-            try {
-                input = new FileInputStream(basicAvatar.getPath());
-                avatar = new MockMultipartFile("fileItem", basicAvatar.getName(), "image/jpg", IOUtils.toByteArray(input));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
         try {
             profile = new Profile(username, avatar.getBytes());
