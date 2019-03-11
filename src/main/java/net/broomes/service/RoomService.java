@@ -47,8 +47,8 @@ public class RoomService {
         if(roomName.length()<2 || roomName.length()>20){
             return new ResponseEntity<>("Room name must be between 2 - 20 characters.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
-        if(room.getRoomDesc().length()>=40){
-            return new ResponseEntity<>("Room description must be 40 characters or less.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        if(room.getRoomDesc().length()>=80){
+            return new ResponseEntity<>("Room description must be 80 characters or less.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
         room.setRoomName(roomName.substring(0, 1).toUpperCase() + roomName.substring(1));
         return roomDao.saveRoom(room);
