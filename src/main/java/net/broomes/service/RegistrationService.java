@@ -43,23 +43,23 @@ public class RegistrationService {
 
         // if statements to check that username/password are formatted correctly.
         if(!password.equals(confirmPassword)){
-            return new ResponseEntity<>("Password and Confirm Password do not match.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Password and Confirm Password do not match.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         if(!password.matches("[a-zA-Z0-9]*") || !username.matches("[a-zA-Z0-9]*")){
-            return new ResponseEntity<>("Username and Password can only consist of letters and numbers.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Username and Password can only consist of letters and numbers.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         if(password.length()<4 || password.length()>20){
-            return new ResponseEntity<>("Password must be between 4 - 20 characters.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Password must be between 4 - 20 characters.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         if(username.length()<2 || username.length()>20){
-            return new ResponseEntity<>("Username must be between 2 - 20 characters.", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Username must be between 2 - 20 characters.", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         if(avatar.getSize() > 10000000){
-            return new ResponseEntity<>("Profile picture is too large. Has to be less than 10MB", new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Profile picture is too large. Has to be less than 10MB", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
 
         // set all usernames to lowercase.
@@ -70,7 +70,7 @@ public class RegistrationService {
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         if(jdbcUserDetailsManager.userExists(username)){
-            return new ResponseEntity<>("Username already taken", new HttpHeaders(), HttpStatus.ALREADY_REPORTED);
+            return new ResponseEntity<>("Username already taken", new HttpHeaders(), HttpStatus.BAD_REQUEST);
         }
         else{
             String encodedPassword = passwordEncoder.encode(password);
