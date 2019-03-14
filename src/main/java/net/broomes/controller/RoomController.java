@@ -5,6 +5,7 @@ import net.broomes.service.RoomService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RoomController {
         this.roomService = roomService;
     }
 
+    @Secured("ROLE_USER")
     @GetMapping(path="/rooms")
     public ResponseEntity<List> getRooms(){
         return roomService.getRooms();
