@@ -1,10 +1,8 @@
 package net.broomes.controller;
 
-import net.broomes.repository.ProfileRepository;
+import net.broomes.service.ProfileService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,17 +14,16 @@ import java.util.List;
 public class ProfileController {
 
     @Autowired
-    private ProfileRepository profileRepository;
+    private ProfileService profileService;
 
     @GetMapping(path="/profiles")
     public ResponseEntity<List> getProfiles(){
-        return new ResponseEntity<>(profileRepository.findAll(), new HttpHeaders(), HttpStatus.OK);
+        return profileService.getProfiles();
     }
 
     @GetMapping(path="/profile/{username}")
     public ResponseEntity<byte[]> getProfile(@PathVariable String username){
-        byte[] avatar = profileRepository.findById(username).get().getAvatar();
-        return new ResponseEntity<>(avatar, new HttpHeaders(), HttpStatus.OK);
+        return profileService.getProfile(username);
     }
 
     @DeleteMapping(path="/profile")
@@ -34,7 +31,6 @@ public class ProfileController {
 
         //Converts @RequestBody JSON String into a string containing only username
         username = new JSONObject(username).getString("username");
-        profileRepository.deleteById(username);
-        return new ResponseEntity<>(username + " Deleted", new HttpHeaders(), HttpStatus.OK);
+        return profileService.deleteProfile(username);
     }
 }

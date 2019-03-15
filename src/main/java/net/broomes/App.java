@@ -1,24 +1,14 @@
 package net.broomes;
 
-import net.broomes.repository.RoomRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.sql.DataSource;
-
 @SpringBootApplication
-public class App 
+public class App
 {
-
-    @Autowired
-    DataSource dataSource;
-
-    @Autowired
-    RoomRepository roomRepository;
-
     public static void main( String[] args )
     {
         SpringApplication.run(App.class, args);
     }
+
 }

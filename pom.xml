@@ -17,28 +17,10 @@
   </parent>
 
   <properties>
-    <hibernate.version>5.2.16.Final</hibernate.version>
-    <c3po.version>0.9.5.3</c3po.version>
-    <mysql.connector.version>5.1.45</mysql.connector.version>
-    <slf4j.version>1.7.25</slf4j.version>
-
     <maven.plugin.version>3.2.0</maven.plugin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- Spring Security -->
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-bom</artifactId>
-        <version>5.0.0.RELEASE</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <!-- Spring -->
@@ -50,6 +32,20 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- Spring Mock for multipart file conversion -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-mock</artifactId>
+      <version>2.0.8</version>
+    </dependency>
+
+    <!-- For file uploads -->
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.4</version>
     </dependency>
 
     <!-- MySQL -->
@@ -114,12 +110,6 @@
             <target>${maven.compiler.target}</target>
           </configuration>
         </plugin>
-
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-
       </plugins>
     </pluginManagement>
   </build>
