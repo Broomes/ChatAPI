@@ -1,11 +1,12 @@
 package net.broomes.controller;
 
 import net.broomes.model.Room;
-import net.broomes.service.RoomService;
+import net.broomes.repository.RoomRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,27 +16,22 @@ import java.util.List;
 @RequestMapping("api")
 public class RoomController {
 
-    private RoomService roomService;
-
     @Autowired
-    public RoomController(RoomService roomService){
-        this.roomService = roomService;
-    }
+    private RoomRepository roomRepository;
 
-    @Secured("ROLE_USER")
     @GetMapping(path="/rooms")
     public ResponseEntity<List> getRooms(){
-        return roomService.getRooms();
+        return new ResponseEntity<>(roomRepository.findAll(),  new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(path="/room/{roomName}")
     public ResponseEntity<Room> getRoom(@PathVariable String roomName){
-        return roomService.getRoom(roomName);
+        return new ResponseEntity<>(roomRepository.findById(roomName).get(), new HttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping(path="/room")
-    public ResponseEntity<String> saveRoom(@RequestBody Room room){
-        return roomService.saveRoom(room);
+    public ResponseEntity<Room> saveRoom(@RequestBody Room room){
+        return new ResponseEntity<>(roomRepository.saveAndFlush(room), new HttpHeaders(), HttpStatus.OK);
     }
 
     @DeleteMapping(path="/room")
@@ -43,6 +39,7 @@ public class RoomController {
 
 //        Converts @RequestBody JSON String into a string containing only roomName
         roomName = new JSONObject(roomName).getString("roomName");
-        return roomService.deleteRoom(roomName);
+        roomRepository.deleteById(roomName);
+        return new ResponseEntity<>(roomName + " Deleted", new HttpHeaders(), HttpStatus.OK);
     }
 }
